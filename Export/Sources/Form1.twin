@@ -21,9 +21,10 @@ Class Form1
         With pFOD
             .SetTitle "Pick folder..."
             .SetOptions FOS_PICKFOLDERS Or FOS_FORCEFILESYSTEM Or FOS_PATHMUSTEXIST
-            .Show Me.hWnd
             On Error Resume Next
+            .Show Me.hWnd
             .GetResult pFolder
+            On Error GoTo 0
             If (pFolder Is Nothing) = False Then
                 Dim lpPath As LongPtr, sPath As String
                 pFolder.GetDisplayName SIGDN_FILESYSPATH, lpPath
@@ -135,6 +136,7 @@ Class Form1
     End Sub
     
     Private Function ProcessFiles() As Long
+    	On Error GoTo e0
     	Dim i As Long, j As Long, k As Long
         Dim hFile As LongPtr
         Dim lRet As Long
@@ -271,6 +273,9 @@ Class Form1
             End If
     NextFile:
         Next
+        Exit Function
+        e0:
+        PostLog "An unexpected error occured while processing file, " & Err.Number & ", " & Err.Description
     End Function
     
     Private Function PrintError(ByVal hr As Long) As String
