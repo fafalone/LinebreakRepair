@@ -1,0 +1,294 @@
+[ Description ("") ]
+[ FormDesignerId ("C7A9AEFF-A74C-41F5-85C8-CF69C7309BB3") ]
+[ PredeclaredId ]
+Class Form1
+
+    Private mPath As String
+    Private lpFiles() As String
+    Private nFiles As Long
+    
+    Public Sub PostLog(sMsg As String)
+    Text3.Text = Text3.Text & sMsg & vbCrLf
+    SendMessage Text3.hWnd, EM_SCROLL, SB_BOTTOM, ByVal 0&
+    End Sub
+    
+    
+    Private Sub Command2_Click() Handles Command2.Click
+        Dim pFOD As FileOpenDialog
+        Dim pFolder As IShellItem
+    
+        Set pFOD = New FileOpenDialog
+        With pFOD
+            .SetTitle "Pick folder..."
+            .SetOptions FOS_PICKFOLDERS Or FOS_FORCEFILESYSTEM Or FOS_PATHMUSTEXIST
+            .Show Me.hWnd
+            On Error Resume Next
+            .GetResult pFolder
+            If (pFolder Is Nothing) = False Then
+                Dim lpPath As LongPtr, sPath As String
+                pFolder.GetDisplayName SIGDN_FILESYSPATH, lpPath
+                Text1.Text = LPWSTRtoStr(lpPath)
+            End If
+        End With
+    End Sub
+    
+    Private Sub Form_Load() Handles Form.Load
+        SHAutoComplete(Text1.hWnd, SHACF_FILESYS_DIRS)
+    End Sub
+    
+    Private Sub AddBackslash(sz As String)
+    	If Len(sz) = 0 Then
+        	sz = "\"
+            Exit Sub
+    	End If
+        If Right$(sz, 1) <> "\" Then
+        	sz = sz & "\"
+        End If
+    End Sub
+    
+    Private Sub BuildFileList(szPattern As String, szDir As String)
+    	Dim hFind As LongPtr
+        Dim tWFD As WIN32_FIND_DATA
+        
+        hFind = FindFirstFile(szDir & "*", tWFD)
+        If hFind <> INVALID_HANDLE_VALUE Then
+        	Do
+                Dim szName As String = WCHARtoSTR(tWFD.cFileName)
+                If (tWFD.dwFileAttributes And FILE_ATTRIBUTE_DIRECTORY) = FILE_ATTRIBUTE_DIRECTORY Then
+                    If (szName <> ".") And (szName <> "..") Then
+                    	If Check2.Value = vbChecked Then
+                            BuildFileList szPattern, szDir & szName & "\"
+                        End If
+                    End If
+                Else
+                	If PathMatchSpec(szName, szPattern) Then
+                    	ReDim Preserve lpFiles(nFiles)
+                        lpFiles(nFiles) = szDir & szName
+                        nFiles += 1
+                	End If
+                End If
+            Loop While FindNextFile(hFind, tWFD)
+            CloseHandle hFind
+        End If
+    End Sub
+    
+    Private Function WCHARtoSTR(aCh() As Integer) As String
+    Dim i As Long
+    Dim sz As String
+    For i = LBound(aCh) To UBound(aCh)
+        If aCh(i) <> 0 Then
+            sz = sz & ChrW$(CLng(aCh(i)))
+        End If
+    Next
+    WCHARtoSTR = sz
+    End Function
+    
+    Private Sub Command1_Click() Handles Command1.Click
+        If PathFileExists(Text1.Text) = 0 Then
+        	PostLog "Error: Invalid path specified."
+            Exit Sub
+        End If
+        If Text2.Text = "" Then
+        	Dim r As VbMsgBoxResult
+            r = MsgBox("Warning: No file pattern entered; this will process all files, including binaries which likely shouldn't be. Continue?", vbOKCancel Or vbQuestion, App.Title)
+            If r = vbCancel Then Exit Sub
+        End If
+        
+        Command1.Enabled = False
+        Command2.Enabled = False
+        
+        nFiles = 0
+        ReDim lpFiles(0)
+        mPath = Text1.Text
+        AddBackslash(mPath)
+        
+        BuildFileList Text2.Text, mPath
+        
+        If nFiles = 0 Then
+        	PostLog "No matching files found in the specified folder."
+            Command1.Enabled = True
+            Command2.Enabled = True
+            Exit Sub
+        End If
+        
+        If Check1.Value = vbChecked Then
+        	Dim sList As String = Join(lpFiles, ", ")
+            Dim r2 As VbMsgBoxResult
+            r2 = MsgBox("The following " & nFiles & IIf(nFiles = 1, " file", " files") & " will be processed:" & vbCrLf & vbCrLf & sList & vbCrLf & vbCrLf & "Continue?", vbOKCancel Or vbQuestion, App.Title)
+            If r2 = vbCancel Then
+                Command1.Enabled = True
+                Command2.Enabled = True
+                Exit Sub
+            End If
+        End If
+        
+        Dim hr As Long = ProcessFiles()
+        If hr = S_OK Then
+        	PostLog "Successfully processed " & nFiles & IIf(nFiles = 1, " file.", " files.")
+        Else
+        	PostLog "Did not process all files successfully, code " & hr
+        End If
+        
+        Command1.Enabled = True
+        Command2.Enabled = True
+        
+    End Sub
+    
+    Private Function ProcessFiles() As Long
+    	Dim i As Long, j As Long, k As Long
+        Dim hFile As LongPtr
+        Dim lRet As Long
+        
+        Dim btFind As Byte = &H0A
+        Dim btApp As Byte = &H0D
+        
+        Dim btSrc() As Byte
+        Dim btDst() As Byte
+        
+        Dim bFlagOk As Boolean
+        
+        Dim nMatch As Long
+        
+        Dim sName As String
+        Dim dwAttrib As FILE_ATTRIBUTES
+        Dim bResetRO As Boolean
+        
+        Dim cb As Long, cbHigh As Long, cbRet As Long, cbDst As Long
+        
+        For i = 0 To nFiles - 1
+        	j = 0: k = 0
+            sName = Right$(lpFiles(i), Len(lpFiles(i)) - InStrRev(lpFiles(i), "\"))
+            
+            dwAttrib = GetFileAttributes(lpFiles(i))
+            If (dwAttrib And FILE_ATTRIBUTE_READONLY) = FILE_ATTRIBUTE_READONLY Then
+            	If Option1(0).Value = True Then
+                	dwAttrib = dwAttrib And Not FILE_ATTRIBUTE_READONLY
+                    SetFileAttributes(lpFiles(i), dwAttrib)
+                ElseIf Option1(1).Value = True Then
+                    dwAttrib = dwAttrib And Not FILE_ATTRIBUTE_READONLY
+                    SetFileAttributes(lpFiles(i), dwAttrib)
+                    bResetRO = True
+                Else
+                	PostLog "Skipping read only file " & sName
+                	Continue For
+            	End If
+            End If
+            
+        	hFile = CreateFile(lpFiles(i), GENERIC_WRITE Or FILE_WRITE_DATA Or FILE_READ_DATA Or GENERIC_READ, FILE_SHARE_READ, vbNullPtr, OPEN_ALWAYS, FILE_FLAG_WRITE_THROUGH, 0&)
+            If hFile = INVALID_HANDLE_VALUE Then
+            	PostLog "Failed to open file " & sName & ", error=" & PrintError(Err.LastDllError)
+                Continue For
+            End If
+            
+            cb = GetFileSize(hFile, cbHigh)
+            If cbHigh Then
+            	'VB source files shouldn't be >2GB so not implementing the logic to handle this.
+            	PostLog "File too large, skipping " & lpFiles(i)
+                CloseHandle hFile
+                Continue For
+            End If
+            If cb = 0 Then
+            	PostLog "Zero length file, skipping " & sName
+                CloseHandle hFile
+                Continue For
+            End If
+
+            
+            ReDim btSrc(cb - 1)
+            
+            
+            If ReadFile(hFile, btSrc(0), cb, cbRet, vbNullPtr) = 0 Then
+            	PostLog "An error occured reading " & sName & ", Req=" & cb & ", read=" & cbRet & ", error=" & PrintError(Err.LastDllError)
+                CloseHandle hFile
+                Continue For
+            End If
+                    
+            'Calculate total size with substitutions
+            cbDst = cb 'Start with current size
+            nMatch = 0
+            
+            For j = 0 To UBound(btSrc)
+            	If btSrc(j) = btFind Then
+                	If (nMatch = 0) And (bFlagOk = False) And (j <> 0) Then
+                    	If btSrc(j - 1) = btApp Then
+                        	Dim r As VbMsgBoxResult = MsgBox("Warning: The current file appears to already have correct line breaks; continue anyway?" & vbCrLf & "Press 'Try again' to skip to the next file, 'Continue' to proceed and suppress future warnings, or 'Cancel' to abort the entire operation.", vbCritical Or vbCancelTryAgainContinue, sName)
+                            If r = vbCancel Then
+                            	CloseHandle hFile
+                                Return 1
+                            ElseIf r = vbContinue Then
+                            	bFlagOk = True
+                            ElseIf r = vbTryAgain Then
+                            	CloseHandle hFile
+                                GoTo NextFile
+                            End If
+                    	End If
+                	End If
+                    cbDst += 1
+                    nMatch += 1
+            	End If
+            Next
+            
+            If nMatch = 0 Then
+            	PostLog "No improper line breaks found in " & sName
+                CloseHandle hFile
+                Continue For
+            End If
+            
+            ReDim btDst(cbDst - 1)
+            
+            
+            For j = 0 To UBound(btSrc)
+                If btSrc(j) = btFind Then
+                	btDst(k) = btApp
+                    btDst(k + 1) = btFind
+                    k += 2
+                Else
+                	btDst(k) = btSrc(j)
+                    k += 1
+                End If
+            Next
+            
+            'size is >= so no need to worry about junk on the end
+            lRet = SetFilePointer(hFile, 0, ByVal 0, FILE_BEGIN)
+            If (lRet = INVALID_SET_FILE_POINTER) Or (Err.LastDllError <> NO_ERROR) Then
+            	PostLog "Failed to reset file pointer on " & sName
+                CloseHandle hFile
+                Return 2
+            End If
+            lRet = WriteFile(hFile, btDst(0), cbDst, cbRet, vbNullPtr)
+            
+            If lRet Then
+            	PostLog "Successfully fixed " & nMatch & IIf(nMatch = 1, " line break", " line breaks") & " in " & sName
+            Else
+            	PostLog "Failed to write output to " & sName & ", " & PrintError(Err.LastDllError)
+            End If
+            
+            CloseHandle hFile
+            
+            If bResetRO Then
+                dwAttrib = dwAttrib Or FILE_ATTRIBUTE_READONLY
+                SetFileAttributes(lpFiles(i), dwAttrib)
+            End If
+    NextFile:
+        Next
+    End Function
+    
+    Private Function PrintError(ByVal hr As Long) As String
+        Dim lSize            As Long
+   
+        PrintError = Space$(2000)
+        lSize = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM Or FORMAT_MESSAGE_IGNORE_INSERTS, 0&, hr, 0&, PrintError, Len(PrintError), 0&)
+        If lSize > 2 Then
+            If Mid$(PrintError, lSize - 1, 2) = vbCrLf Then
+                lSize = lSize - 2
+            End If
+        End If
+        PrintError = "Error " & hr & ", " & Left$(PrintError, lSize)
+    End Function
+    
+    Private Sub Command3_Click() Handles Command3.Click
+        Text3.Text = ""
+    End Sub
+    
+    
+End Class

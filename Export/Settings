@@ -1,0 +1,71 @@
+{
+	"configuration.inherits": "Defaults",
+	"project.appTitle": "GHFix",
+	"project.buildPath": "${SourcePath}\\Build_${Architecture}\\${ProjectName}.${FileExtension}",
+	"project.buildType": "Standard EXE",
+	"project.description": "VB6 GitHub Linebreak Fixer",
+	"project.exportPathIsV2": true,
+	"project.forceDpiAwarenessAtStartup": "NONE",
+	"project.id": "{2F92444E-83BF-4D19-88E2-44F1C32D43C3}",
+	"project.licence": "MIT",
+	"project.name": "GHFix",
+	"project.optionExplicit": true,
+	"project.references": [
+		{
+			"hasBeenSplit": true,
+			"id": "{F50B82D0-DCAB-43FE-9631-11959D4A4728}",
+			"isCompilerPackage": true,
+			"licence": "MIT",
+			"name": "[COMPILER PACKAGE] twinBASIC - VB Compatibility Package (Forms)",
+			"path32": "/Packages/WindowsControlsPackage",
+			"path64": "/Packages/WindowsControlsPackage",
+			"publishedDate": "09-FEB-2022",
+			"publishedTime": "15:48:54",
+			"publisher": "TWINBASIC-COMPILER",
+			"symbolId": "VB",
+			"versionBuild": 0,
+			"versionMajor": 0,
+			"versionMinor": 0,
+			"versionRevision": 31
+		},
+		{
+			"id": "{00020430-0000-0000-C000-000000000046}",
+			"lcid": 0,
+			"name": "OLE Automation",
+			"path32": "C:\\Windows\\SysWow64\\stdole2.tlb",
+			"path64": "C:\\Windows\\System32\\stdole2.tlb",
+			"symbolId": "stdole",
+			"versionMajor": 2,
+			"versionMinor": 0
+		},
+		{
+			"id": "{1FCDB98D-617D-4995-9736-2ED0E4746A10}",
+			"licence": "CC0 1.0 Universal",
+			"name": "[IMPORTED] twinBASIC Shell Library v6.5.263",
+			"path32": "/Packages/tbShellLib",
+			"path64": "/Packages/tbShellLib",
+			"publishedDate": "07-DEC-2023",
+			"publishedTime": "06:29:38",
+			"publisher": "fafalone",
+			"symbolId": "tbShellLib",
+			"versionBuild": "263",
+			"versionMajor": "6",
+			"versionMinor": "5",
+			"versionRevision": "0"
+		}
+	],
+	"project.settingsVersion": 1,
+	"project.startupObject": "Form1",
+	"project.versionBuild": 1,
+	"project.versionCompanyName": "JAJ Productions",
+	"project.versionFileDescription": "VB6 GitHub Linebreak Fixer",
+	"project.versionLegalCopyright": "(c) 2023",
+	"project.versionMajor": 1,
+	"project.versionMinor": 0,
+	"project.versionProductName": "GHFix",
+	"project.warnings": {
+		"errors": [],
+		"ignored": []
+	},
+	"runtime.useUnicodeStandardLibrary": true
+}
