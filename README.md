@@ -8,6 +8,9 @@ I've been downloading a lot of VB6 projects from GitHub to test in twinBASIC. Wh
 This project uses my tbShellLib project for all the APIs (this is why the source file size is so large; however the compiled exe uses only what is neccessary, so is only 2MB). Can be compiled to both 32bit and 64bit. I've tested to confirm the output is byte for byte identical to using WinHex to manually replace 0x0A with 0x0D 0x0A, and the app checks whether the line breaks already appear to be correct.
 
 
+**Update** v1.0.2 fixes an unhandled error when canceling the choose path dialog.
+
+
 ### How it works
 
 The basic principle is two loops. First, we count how many Lf's (0x0A) there are while checking if there's already an 0x0D before it:
