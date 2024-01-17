@@ -5,7 +5,7 @@ GHFix: VB6 GitHub Linebreak Repair
 
 I've been downloading a lot of VB6 projects from GitHub to test in twinBASIC. When these have been uploaded with certain settings, GitHub replaces the vbCrLf line breaks with vbLf only, which results in a corrupt file that VB6 can't read. tB can-- but I need to confirm working in VB6 first. So I made this small project to automatically repair the line breaks of all VB6 files in a given directory, with a number of options to help. The file type list is preset, but you could change it to work on any file type instead.
 
-This project uses my tbShellLib project for all the APIs (this is why the source file size is so large; however the compiled exe uses only what is neccessary, so is only 2MB). Can be compiled to both 32bit and 64bit. I've tested to confirm the output is byte for byte identical to using WinHex to manually replace 0x0A with 0x0D 0x0A, and the app checks whether the line breaks already appear to be correct.
+This project uses my [WinDevLib project](https://github.com/fafalone/WinDevLib) for all the APIs (this is why the source file size is so large; however the compiled exe uses only what is neccessary, so is only 2MB). Can be compiled to both 32bit and 64bit. I've tested to confirm the output is byte for byte identical to using WinHex to manually replace 0x0A with 0x0D 0x0A, and the app checks whether the line breaks already appear to be correct.
 
 
 **Update** v1.0.2 fixes an unhandled error when canceling the choose path dialog.
