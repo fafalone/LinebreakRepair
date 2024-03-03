@@ -41,16 +41,16 @@
 		{
 			"id": "{1FCDB98D-617D-4995-9736-2ED0E4746A10}",
 			"licence": "CC0 1.0 Universal",
-			"name": "[IMPORTED] twinBASIC Shell Library v6.5.263",
-			"path32": "/Packages/tbShellLib",
-			"path64": "/Packages/tbShellLib",
-			"publishedDate": "07-DEC-2023",
-			"publishedTime": "06:29:38",
+			"name": "[IMPORTED] Windows Development Library for twinBASIC v7.6.325",
+			"path32": "/Packages/WinDevLib",
+			"path64": "/Packages/WinDevLib",
+			"publishedDate": "29-FEB-2024",
+			"publishedTime": "17:58:56",
 			"publisher": "fafalone",
-			"symbolId": "tbShellLib",
-			"versionBuild": "263",
-			"versionMajor": "6",
-			"versionMinor": "5",
+			"symbolId": "WinDevLib",
+			"versionBuild": "325",
+			"versionMajor": "7",
+			"versionMinor": "6",
 			"versionRevision": "0"
 		}
 	],
@@ -65,7 +65,9 @@
 	"project.versionProductName": "GHFix",
 	"project.warnings": {
 		"errors": [],
-		"ignored": []
+		"hints": [],
+		"ignored": [],
+		"info": []
 	},
 	"runtime.useUnicodeStandardLibrary": true
 }

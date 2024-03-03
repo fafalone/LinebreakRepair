@@ -1,6 +1,6 @@
-[ Description ("") ]
-[ FormDesignerId ("C7A9AEFF-A74C-41F5-85C8-CF69C7309BB3") ]
-[ PredeclaredId ]
+[Description("VB6 GitHub Linebreak Fixer")]
+[FormDesignerId("C7A9AEFF-A74C-41F5-85C8-CF69C7309BB3")]
+[PredeclaredId]
 Class Form1
 
     Private mPath As String
