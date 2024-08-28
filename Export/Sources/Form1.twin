@@ -68,6 +68,7 @@ Class Form1
                         nFiles += 1
                 	End If
                 End If
+                ZeroMemory tWFD, LenB(Of WIN32_FIND_DATA)
             Loop While FindNextFile(hFind, tWFD)
             CloseHandle hFind
         End If

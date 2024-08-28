@@ -56,18 +56,19 @@
 	],
 	"project.settingsVersion": 1,
 	"project.startupObject": "Form1",
-	"project.versionBuild": 2,
+	"project.versionBuild": 3,
 	"project.versionCompanyName": "JAJ Productions",
 	"project.versionFileDescription": "VB6 GitHub Linebreak Fixer",
-	"project.versionLegalCopyright": "(c) 2023",
+	"project.versionLegalCopyright": "(c) 2023-2024",
 	"project.versionMajor": 1,
-	"project.versionMinor": 0,
+	"project.versionMinor": 1,
 	"project.versionProductName": "GHFix",
 	"project.warnings": {
 		"errors": [],
 		"hints": [],
 		"ignored": [],
-		"info": []
+		"info": [],
+		"warnings": []
 	},
 	"runtime.useUnicodeStandardLibrary": true
 }
