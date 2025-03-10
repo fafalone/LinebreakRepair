@@ -2,7 +2,10 @@
 [FormDesignerId("C7A9AEFF-A74C-41F5-85C8-CF69C7309BB3")]
 [PredeclaredId]
 Class Form1
+    
+    'Updated 10 Mar 2025: Potential crash from CloseHandle being used instead of FindClose.
 
+    
     Private mPath As String
     Private lpFiles() As String
     Private nFiles As Long
@@ -70,7 +73,7 @@ Class Form1
                 End If
                 ZeroMemory tWFD, LenB(Of WIN32_FIND_DATA)
             Loop While FindNextFile(hFind, tWFD)
-            CloseHandle hFind
+            FindClose hFind
         End If
     End Sub
     
@@ -115,6 +118,7 @@ Class Form1
         
         If Check1.Value = vbChecked Then
         	Dim sList As String = Join(lpFiles, ", ")
+            Debug.Print "sList=" & sList
             Dim r2 As VbMsgBoxResult
             r2 = MsgBox("The following " & nFiles & IIf(nFiles = 1, " file", " files") & " will be processed:" & vbCrLf & vbCrLf & sList & vbCrLf & vbCrLf & "Continue?", vbOKCancel Or vbQuestion, App.Title)
             If r2 = vbCancel Then
