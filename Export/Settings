@@ -39,19 +39,19 @@
 			"versionMinor": 0
 		},
 		{
-			"autoCtlExt": true,
 			"id": "{1FCDB98D-617D-4995-9736-2ED0E4746A10}",
+			"isOnlinePackage": true,
 			"licence": "CC0 1.0 Universal",
-			"name": "[IMPORTED] Windows Development Library for twinBASIC v8.7.502",
+			"name": "[IMPORTED] Windows Development Library for twinBASIC v9.2.646",
 			"path32": "/Packages/WinDevLib",
 			"path64": "/Packages/WinDevLib",
-			"publishedDate": "06-MAR-2025",
-			"publishedTime": "06:21:36",
+			"publishedDate": "24-JAN-2026",
+			"publishedTime": "14:00:45",
 			"publisher": "fafalone",
 			"symbolId": "WinDevLib",
-			"versionBuild": "502",
-			"versionMajor": "8",
-			"versionMinor": "7",
+			"versionBuild": "646",
+			"versionMajor": "9",
+			"versionMinor": "2",
 			"versionRevision": "0"
 		}
 	],
