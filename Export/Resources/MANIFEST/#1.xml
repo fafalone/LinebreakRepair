@@ -3,10 +3,10 @@
    <assemblyIdentity
       type="win32"
       processorArchitecture="*"
-      name="My_twinBASIC_Application"
+      name="GHFix"
       version="1.0.0.0"
    />
-   <description>Application description here</description>
+   <description>VB6 GitHub Linebreak Repair</description>
    <dependency>
       <dependentAssembly>
          <assemblyIdentity
