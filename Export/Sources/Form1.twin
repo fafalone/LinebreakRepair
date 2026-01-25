@@ -181,7 +181,7 @@ Class Form1
             	End If
             End If
             
-        	hFile = CreateFile(lpFiles(i), GENERIC_WRITE Or FILE_WRITE_DATA Or FILE_READ_DATA Or GENERIC_READ, FILE_SHARE_READ, vbNullPtr, OPEN_ALWAYS, FILE_FLAG_WRITE_THROUGH, 0&)
+        	hFile = CreateFile(lpFiles(i), GENERIC_WRITE Or FILE_WRITE_DATA Or FILE_READ_DATA Or GENERIC_READ, FILE_SHARE_READ, ByVal vbNullPtr, OPEN_ALWAYS, FILE_FLAG_WRITE_THROUGH, 0&)
             If hFile = INVALID_HANDLE_VALUE Then
             	PostLog "Failed to open file " & sName & ", error=" & PrintError(Err.LastDllError)
                 Continue For
@@ -204,7 +204,7 @@ Class Form1
             ReDim btSrc(cb - 1)
             
             
-            If ReadFile(hFile, btSrc(0), cb, cbRet, vbNullPtr) = 0 Then
+            If ReadFile(hFile, btSrc(0), cb, cbRet, ByVal vbNullPtr) = 0 Then
             	PostLog "An error occured reading " & sName & ", Req=" & cb & ", read=" & cbRet & ", error=" & PrintError(Err.LastDllError)
                 CloseHandle hFile
                 Continue For
@@ -262,7 +262,7 @@ Class Form1
                 CloseHandle hFile
                 Return 2
             End If
-            lRet = WriteFile(hFile, btDst(0), cbDst, cbRet, vbNullPtr)
+            lRet = WriteFile(hFile, btDst(0), cbDst, cbRet, ByVal vbNullPtr)
             
             If lRet Then
             	PostLog "Successfully fixed " & nMatch & IIf(nMatch = 1, " line break", " line breaks") & " in " & sName
